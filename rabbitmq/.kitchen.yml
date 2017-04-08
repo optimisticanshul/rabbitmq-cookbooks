@@ -1,0 +1,46 @@
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+  require_chef_omnibus: latest
+
+platforms:
+  - name: centos-6.7
+  - name: centos-7.2
+  - name: ubuntu-14.04
+  - name: ubuntu-16.04
+  - name: debian-7.7
+
+suites:
+  - name: default
+    run_list:
+      - recipe[rabbitmq::default]
+  - name: default-use-distro-version
+    run_list:
+      - recipe[rabbitmq::default]
+    attributes:
+      rabbitmq:
+        use_distro_version: true
+    excludes: ["centos-6.7", "centos-7.2"]
+  - name: lwrps
+    run_list:
+      - recipe[rabbitmq_test::lwrps]
+  - name: default-force-yes
+    run_list:
+      - recipe[rabbitmq::default]
+    attributes:
+           apt:
+             confd:
+               assume_yes: true
+               force-yes: true
+    excludes: ["centos-6.7", "centos-7.2"]
+  - name: default-force-yes-false
+    run_list:
+      - recipe[rabbitmq::default]
+    attributes:
+           apt:
+             confd:
+               assume_yes: false
+               force-yes: false
+    excludes: ["centos-6.7", "centos-7.2"]
