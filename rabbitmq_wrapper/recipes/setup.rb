@@ -22,11 +22,7 @@ chef_gem 'bunny' do
   action :install
 end
 
-node.normal['rabbitmq']['clustering']['enable'] = true
-node.normal['rabbitmq']['open_file_limit'] = 65000
-node.normal['rabbitmq']['clustering']['use_auto_clustering'] = true
-
-include_recipe 'rabbitmq::default'
+include_recipe 'rabbitmq::cluster'
 
 # force the rabbitmq restart now, then start testing
 execute 'sleep 10' do
@@ -60,7 +56,7 @@ rabbitmq_user "root" do
 end
 
 rabbitmq_user "root" do
-  tag "admin"
+  tag "administrator"
   action :set_tags
 end
 
@@ -76,7 +72,7 @@ remote_file '/usr/local/bin/rabbitmqadmin' do
 end
 
 rabbitmq_policy 'rabbitmq_cluster' do
-  pattern 'cluster.*'
+  pattern ''
   params 'ha-mode' => 'all', 'ha-sync-mode' => 'automatic'
   apply_to 'queues'
   action :set

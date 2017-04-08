@@ -55,7 +55,7 @@ default['rabbitmq']['default_pass'] = 'guest'
 # loopback_users
 # List of users which are only permitted to connect to the broker via a loopback interface (i.e. localhost).
 # If you wish to allow the default guest user to connect remotely, you need to change this to [].
-default['rabbitmq']['loopback_users'] = nil
+default['rabbitmq']['loopback_users'] = []
 
 # Erlang kernel application options
 # See http://www.erlang.org/doc/man/kernel_app.html
@@ -67,12 +67,11 @@ default['rabbitmq']['kernel']['inet_dist_use_interface'] = nil
 
 # clustering
 default['rabbitmq']['clustering']['enable'] = true
-default['rabbitmq']['clustering']['cluster_partition_handling'] = 'ignore'
+default['rabbitmq']['clustering']['cluster_partition_handling'] = 'pause_minority'
 
-default['rabbitmq']['clustering']['use_auto_clustering'] = false
+default['rabbitmq']['clustering']['use_auto_clustering'] = true
 default['rabbitmq']['clustering']['cluster_name'] = nil
-default['rabbitmq']['clustering']['cluster_nodes'] = []
-
+default['rabbitmq']['clustering']['cluster_nodes'] = [{"name": "rabbit@rabbitmq-01","type": "disc"},{"name": "rabbit@rabbitmq-02", "type": "disc"}, {"name": "rabbit@rabbitmq-03","type": "disc"}]
 # Manual clustering
 # - Node type : master | slave
 default['rabbitmq']['clustering']['node_type'] = 'master'
@@ -87,9 +86,9 @@ default['rabbitmq']['log_levels'] = { 'connection' => 'info' }
 # resource usage
 default['rabbitmq']['disk_free_limit_relative'] = nil
 default['rabbitmq']['disk_free_limit'] = nil
-default['rabbitmq']['vm_memory_high_watermark'] = nil
-default['rabbitmq']['max_file_descriptors'] = 1024
-default['rabbitmq']['open_file_limit'] = nil
+default['rabbitmq']['vm_memory_high_watermark'] = 0.75
+default['rabbitmq']['max_file_descriptors'] = 65000
+default['rabbitmq']['open_file_limit'] = 65000
 
 # job control
 default['rabbitmq']['job_control'] = 'initd'
@@ -135,8 +134,8 @@ default['rabbitmq']['disabled_virtualhosts'] = []
 
 # users
 default['rabbitmq']['enabled_users'] =
-  [{ :name => 'guest', :password => 'guest', :rights =>
-    [{ :vhost => nil, :conf => '.*', :write => '.*', :read => '.*' }]
+  [{ :name => 'root', :password => 'RooT@NearBY2016', :rights =>
+    [{ :vhost => '/', :conf => '.*', :write => '.*', :read => '.*' }]
   }]
 default['rabbitmq']['disabled_users'] = []
 
@@ -158,7 +157,7 @@ when 'debian'
 end
 
 # heartbeat
-default['rabbitmq']['heartbeat'] = 60
+default['rabbitmq']['heartbeat'] = 5
 
 # per default all policies and disabled policies are empty but need to be
 # defined
@@ -170,9 +169,9 @@ default['rabbitmq']['disabled_policies'] = []
 # default['rabbitmq']['policies']['ha-all']['params'] = { 'ha-mode' => 'all' }
 # default['rabbitmq']['policies']['ha-all']['priority'] = 0
 #
-# default['rabbitmq']['policies']['ha-two']['pattern'] = '^two.'
-# default['rabbitmq']['policies']['ha-two']['params'] = { 'ha-mode' => 'exactly', 'ha-params' => 2 }
-# default['rabbitmq']['policies']['ha-two']['priority'] = 1
+default['rabbitmq']['policies']['ha-two']['pattern'] = ''
+default['rabbitmq']['policies']['ha-two']['params'] = { 'ha-mode' => 'all'}
+default['rabbitmq']['policies']['ha-two']['priority'] = 1
 
 # conf
 default['rabbitmq']['conf'] = {}
